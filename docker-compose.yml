@@ -1,0 +1,59 @@
+# version: '3.8'  # Specify the version of Docker Compose
+
+services:  # Defining all the services that make up the application.
+
+  redis:  # Define service for Redis
+    container_name: container_redis
+    image: "redis:alpine"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 2
+      start_period: 10s
+    volumes:
+      - "redis_data:/data"
+
+    # restart: always
+
+  postgres:  # Define service for PostgreSQL
+    container_name: container_postgres
+    image: "postgres:12.6"
+    environment:
+      - POSTGRES_PASSWORD=stratocaster
+      - POSTGRES_USER='tsandil'
+    volumes:
+      - "postgres_data:/var/lib/postgresql/data"
+
+  data_fetcher:  # Define the data_fetcher service
+    container_name: container_fetch
+    build:
+      context: .
+      dockerfile: data_fetcher/Dockerfile
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: []
+      interval: 5s
+      timeout: 3s
+      retries: 2
+      start_period: 10s
+
+    # restart: always
+
+  data_loader:  # Define the data_loader service
+    container_name: container_load
+    build:
+      context: .
+      dockerfile: data_loader/Dockerfile
+    depends_on:
+      data_fetcher:
+        condition: service_completed_successfully
+
+    # restart: always
+
+volumes:  # Define named volumes
+  redis_data: {}
+  postgres_data: {}
+

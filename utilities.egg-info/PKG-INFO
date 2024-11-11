@@ -1,0 +1,8 @@
+Metadata-Version: 2.1
+Name: utilities
+Version: 0.0.1
+Author: Sandil Tandukar
+Author-email: tan.sandil44@gmail.com
+Requires-Dist: requests
+Requires-Dist: redis
+Requires-Dist: psycopg2-binary
