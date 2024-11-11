@@ -1,0 +1,4 @@
+__pycache__/
+*.pyc
+redis_data/
+postgres_data/
