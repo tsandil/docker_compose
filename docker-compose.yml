@@ -5,6 +5,8 @@ services:  # Defining all the services that make up the application.
   redis:  # Define service for Redis
     container_name: container_redis
     image: "redis:alpine"
+    ports:
+      - "${REDIS_PORT}:${REDIS_PORT}"
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
@@ -19,9 +21,12 @@ services:  # Defining all the services that make up the application.
   postgres:  # Define service for PostgreSQL
     container_name: container_postgres
     image: "postgres:12.6"
+    ports:
+      - 5432:5432
     environment:
-      - POSTGRES_PASSWORD=stratocaster
-      - POSTGRES_USER='tsandil'
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_DB=${POSTGRES_DB}
     volumes:
       - "postgres_data:/var/lib/postgresql/data"
 
@@ -34,7 +39,7 @@ services:  # Defining all the services that make up the application.
       redis:
         condition: service_healthy
     healthcheck:
-      test: []
+      test: ["CMD", "redis-cli", "get", "crypto_data:*"]
       interval: 5s
       timeout: 3s
       retries: 2
@@ -50,6 +55,12 @@ services:  # Defining all the services that make up the application.
     depends_on:
       data_fetcher:
         condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "psql", "-U", "${POSTGRES_USER}", "-d", "${POSTGRES_DB}", "-c", "SELECT COUNT(*) FROM crypto.crypto_prices WHERE id>0;"]
+      interval: 10s
+      retries: 3
+      start_period: 10s
+      timeout: 5s
 
     # restart: always
 

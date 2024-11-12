@@ -48,3 +48,7 @@ Configuration
     - PostgreSQL user and password are set in ```docker-compose.yml```.
     - ```load_data.py``` connects to the PostgreSQL using the connection string in ```conn_string```
 
+Some Docker Commands
+=======================
+
+- ```docker-compose build --no-cache``` : Full rebuild of images.
