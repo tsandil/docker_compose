@@ -52,3 +52,10 @@ Some Docker Commands
 =======================
 
 - ```docker-compose build --no-cache``` : Full rebuild of images.
+- ```docker-compose --build``` : Force  re building of images.
+- ```docker exec -it <container_name/container_id> sh``` : Accessing any container in interactive mode
+- ```docker-compose up``` : Build and start the containers/services defined in the ```docker-compose.yml```.
+- ```docker-compose down``` : Stop and remove the containers.  It can be used with ```--volumes``` and ```--rmi all```, to remove all the volumes and images in the docker-compose project.
+- ```docker logs -f <container_name>``` : View Logs of specific docker container.
+
+
