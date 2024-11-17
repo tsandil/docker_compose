@@ -1,4 +1,4 @@
-# version: '3.8'  # Specify the version of Docker Compose
+# version: "3.8"  # Specify the version of Docker Compose
 
 services:  # Defining all the services that make up the application.
 
@@ -15,6 +15,8 @@ services:  # Defining all the services that make up the application.
       start_period: 10s
     volumes:
       - "redis_data:/data"
+    networks:
+      - app_network
 
     # restart: always
 
@@ -29,6 +31,8 @@ services:  # Defining all the services that make up the application.
       - POSTGRES_DB=${POSTGRES_DB}
     volumes:
       - "postgres_data:/var/lib/postgresql/data"
+    networks:
+      - app_network
 
   data_fetcher:  # Define the data_fetcher service
     container_name: container_fetch
@@ -44,6 +48,8 @@ services:  # Defining all the services that make up the application.
       timeout: 3s
       retries: 2
       start_period: 10s
+    networks:
+      - app_network
 
     # restart: always
 
@@ -61,6 +67,8 @@ services:  # Defining all the services that make up the application.
       retries: 3
       start_period: 10s
       timeout: 5s
+    networks:
+      - app_network
 
     # restart: always
 
@@ -68,3 +76,7 @@ volumes:  # Define named volumes
   redis_data: {}
   postgres_data: {}
 
+networks:
+  app_network:
+    name: dockerized_pipeline_app_network
+    driver: bridge
